@@ -23,10 +23,12 @@ const config = {
     mouseInfluenceDistance: 180,                // How far mouse pulls particles
     maxSpeed: 0.5,                              // Velocity cap per frame
     mouseAttraction: 0.012,                     // Strength of mouse pull
-    particleOpacity: 1,                       // Particle transparency
+    particleOpacity: 1,                         // Particle transparency
     lineOpacity: 0.82,                          // Connection line transparency
     particleSizeMin: 0.5,
-    particleSizeMax: 1.8
+    particleSizeMax: 1.8,
+    repulsionDistance: 30,                      // Gravitational push-pull field distance
+    repulsionStrength: 0.015                    // Strength of particle repulsion
 };
 
 // Particle array
@@ -61,7 +63,7 @@ addEventListener('mouseout', () => {
  */
 function init() {
     particles = [];
-    const count = Math.min(Math.floor((canvas.width * canvas.height) / 18000), 120);
+    const count = Math.max(Math.floor((canvas.width * canvas.height) / 18000), 120);
     // console.log(canvas.width * canvas.height / 18000);  //Approx 40 particles as minimum
 
 
@@ -82,6 +84,7 @@ function init() {
  * - Drift by velocity
  * - Bounce off edges
  * - Mouse attraction
+ * - Particle repulsion (gravitational push-pull field)
  * - Speed limiting
  */
 function updateParticles() {
@@ -109,7 +112,22 @@ function updateParticles() {
             p.vy += (dy / distance) * config.mouseAttraction;
         }
 
-        // 4. SPEED LIMIT: Cap maximum velocity magnitude
+        // 4. PARTICLE REPULSION: Push away from nearby particles (gravitational field)
+        for (let other of particles) {
+            if (other === p) continue;
+
+            const repelDx = p.x - other.x;
+            const repelDy = p.y - other.y;
+            const repelDistance = Math.sqrt(repelDx * repelDx + repelDy * repelDy);
+
+            if (repelDistance < config.repulsionDistance && repelDistance > 0) {
+                // Normalize direction and add repulsion force
+                p.vx += (repelDx / repelDistance) * config.repulsionStrength;
+                p.vy += (repelDy / repelDistance) * config.repulsionStrength;
+            }
+        }
+
+        // 5. SPEED LIMIT: Cap maximum velocity magnitude
         const speed = Math.sqrt(p.vx * p.vx + p.vy * p.vy);
         if (speed > config.maxSpeed) {
             p.vx = (p.vx / speed) * config.maxSpeed;
