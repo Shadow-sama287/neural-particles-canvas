@@ -18,9 +18,16 @@ canvas.height = innerHeight;
 
 // Configuration - easily customizable
 const config = {
-    particleColor: 'rgba(16,185,129',           // Emerald green
+    particleColor: 'rgba(255, 0, 127',           // Emerald green
+    /*
+        // In config, change particleColor:
+        particleColor: "rgba(16,185,129"; // Emerald green
+        particleColor: "rgba(255, 0, 127"; // Hot pink
+        particleColor: "rgba(100, 200, 255"; // Sky blue
+        particleColor: "rgba(138, 43, 226"; // Blue violet
+    */
     connectionDistance: 130,                    // Max distance to draw lines
-    mouseInfluenceDistance: 180,                // How far mouse pulls particles
+    mouseInfluenceDistance: 1800,                // How far mouse pulls particles
     maxSpeed: 0.5,                              // Velocity cap per frame
     mouseAttraction: 0.012,                     // Strength of mouse pull
     particleOpacity: 1,                         // Particle transparency
